@@ -7,6 +7,14 @@ struct Apple{
     int apple_x;
     int apple_y;
 };
+void drukuj(int n, char **tab){
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            std::cout<<tab[i][j]<<" ";
+        }
+        std::cout<<std::endl;
+    }
+}
 int main(){
     int s;
     srand(time(NULL));
@@ -14,8 +22,9 @@ int main(){
     std::deque <std::pair<int,int> > snek;
     std::cout<<"Podaj rozmiar planszy:"<<std::endl;
     std::cin>>s;
-    char mapka[s][s];
-    std::cout<<"git1";
+    char **mapka;
+    mapka=new char *[s];
+    for(int i=0;i<s;i++)    mapka[i]=new char[s];
     for(int i=0;i<s;i++){
         for(int j=0;j<s;j++){
             mapka[i][j]=32; //spacja
@@ -29,8 +38,6 @@ int main(){
     }
     snek.push_front(std::make_pair((s-1)/2,(s-1)/2));
     bool przegrana=0;
-    std::cout<<"git";
-    char kierunek;
     while(przegrana==0){
         bool znal=0;
         while(znal==0){
@@ -41,7 +48,20 @@ int main(){
                 znal=1;
             }
         }
-        kierunek=getch();
+        char kierunek=0;
+        kierunek=_getch();
         std::cout<<kierunek;
+        if(kierunek==72){   //UP
+            std::cout<<"UP";
+        }
+        if(kierunek==80){   //DOWN
+            std::cout<<"DOWN";
+        }
+        if(kierunek==75){   //LEFT
+
+        }
+        if(kierunek==77){   //RIGHT
+
+        }
     }
 }
