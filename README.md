@@ -15,3 +15,4 @@ Projekt na zajęcia z Programowania
 12. [ ] Albo wyświetlać statystyki po końcu gry (czas gry, długość węża, ilość zjedzonych jabłek, coś może jeszcze)
 13. [ ] Napisać bota, który by był warunkami, by komputer jadł jabłka
 14. [ ] Tryb, gdzie jabłka będą znikać po jakimś czasie
+15. [ ] Tryb, gdzie wraz z jedzonymi jabłkami wąż przyspiesza (jakaś funkcja do tego, co x jabłek wąż jest o y szybszy)
