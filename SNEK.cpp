@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include <conio.h>
 #include <Windows.h>
+//cokolwiek by sie zmienilo
 int losowanko(int n){       //generowanie losowych liczb w zaleznosci od rozmiaru planszy
     return rand()%n;
 }
