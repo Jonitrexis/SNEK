@@ -2,7 +2,7 @@
 Projekt na zajęcia z Programowania
 ## TODO:
 1. [ ] Dźwięki jedzenia jabłka
-2. [ ] Muzyczka w tle
+2. [ ] Muzyczka w tle (Kinga)
 3. [ ] Przeszkody
 4. [ ] Specjalne jabłka/jedzenie
 5. [ ] Różne pozimy trudności (szybciej się wąż porusza)
