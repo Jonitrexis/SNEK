@@ -5,7 +5,7 @@ Projekt na zajęcia z Programowania
 2. [ ] Muzyczka w tle
 3. [ ] Przeszkody
 4. [ ] Specjalne jabłka/jedzenie
-5. [ ] Różne pozimy trudności
+5. [ ] Różne pozimy trudności (szybciej się wąż porusza)
 6. [ ] Samoporuszający się snek
 7. [ ] Wszystkie warunki przegranej
 8. [ ] Jechanie w ścianę
