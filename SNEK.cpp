@@ -1,7 +1,8 @@
 #include <bits/stdc++.h>
 #include <conio.h>
 #include <Windows.h>
-//cokolwiek
+#include <mmsystem.h>
+
 int losowanko(int n){       //generowanie losowych liczb w zaleznosci od rozmiaru planszy
     return rand()%n;
 }
@@ -32,15 +33,16 @@ void drukuj(int n, char **tab) {
         for (int j = 0; j < n; j++) {
             if (i == 0 || i == n - 1 || j == 0 || j == n - 1)   console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);        //kolorujemy ramki planszy
             std::cout << tab[i][j];
-            console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
+            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
             if ((i == 0 || i == n - 1 || j==0 || j==n-2)&&(j!=n-1)) console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);    //kolorujemy ramki planszy
                 std::cout << " ";
-                console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
+                //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
         }
         std::cout << std::endl;
     }
 }
 int main(){
+    PlaySound(TEXT("theme-music.wav"), NULL, SND_ASYNC | SND_LOOP) ;
     hidecursor();       //wywolanie funkcji ukrywajacej kursor
     int s;
     srand(time(NULL));
@@ -77,7 +79,7 @@ int main(){
             std::pair<int,int> coordinates_back=snek.back();        //koordynaty ogona weza
             mapka[snek[0].first][snek[0].second]='o';
             cursor(snek[0].first+2,2*snek[0].second);   //ustawienie obecnej glowy na cialo
-            console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
+            //console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
             std::cout<<"o";
             coordinates_front.first=(coordinates_front.first-1)%(s-2);  //wskazanie przyszlej pozycji glowy
             if(mapka[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
@@ -87,7 +89,7 @@ int main(){
             mapka[snek[0].first][snek[0].second]='O';
             cursor(snek[0].first+2,2*snek[0].second);   //ustawienie glowy na nowej pozycji
             std::cout<<"O";
-            console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
+            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
             if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
                 zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
             }
@@ -103,7 +105,7 @@ int main(){
             std::pair<int,int> coordinates_back=snek.back();        //koordynaty ogona weza
             mapka[snek[0].first][snek[0].second]='o';
             cursor(snek[0].first+2,2*snek[0].second);   //ustawienie obecnej glowy na cialo
-            console_colour(FOREGROUND_GREEN | FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
+            //console_colour(FOREGROUND_GREEN | FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
             std::cout<<"o";
             coordinates_front.first=(coordinates_front.first+1)%(s-1);  //wskazanie przyszlej pozycji glowy
             if(mapka[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
@@ -113,7 +115,7 @@ int main(){
             mapka[snek[0].first][snek[0].second]='O';
             cursor(snek[0].first+2,2*snek[0].second);   //ustawienie glowy na nowej pozycji
             std::cout<<"O";
-            console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
+            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
             if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
                 zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
             }
@@ -129,7 +131,7 @@ int main(){
             std::pair<int,int> coordinates_back=snek.back();        //koordynaty ogona weza
             mapka[snek[0].first][snek[0].second]='o';
             cursor(snek[0].first+2,2*snek[0].second);   //ustawienie obecnej glowy na cialo
-            console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
+            //console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
             std::cout<<"o";
             coordinates_front.second=(coordinates_front.second-1)%(s-2);  //wskazanie przyszlej pozycji glowy
             if(mapka[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
@@ -139,7 +141,7 @@ int main(){
             mapka[snek[0].first][snek[0].second]='O';
             cursor(snek[0].first+2,2*snek[0].second);   //ustawienie glowy na nowej pozycji
             std::cout<<"O";
-            console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
+            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
             if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
                 zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
             }
@@ -155,7 +157,7 @@ int main(){
             std::pair<int,int> coordinates_back=snek.back();        //koordynaty ogona weza
             mapka[snek[0].first][snek[0].second]='o';
             cursor(snek[0].first+2,2*snek[0].second);   //ustawienie obecnej glowy na cialo
-            console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
+            //console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
             std::cout<<"o";
             coordinates_front.second=(coordinates_front.second+1)%(s-1);  //wskazanie przyszlej pozycji glowy
             if(mapka[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
@@ -165,7 +167,7 @@ int main(){
             mapka[snek[0].first][snek[0].second]='O';
             cursor(snek[0].first+2,2*snek[0].second);   //ustawienie glowy na nowej pozycji
             std::cout<<"O";
-            console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
+            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
             if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
                 zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
             }
@@ -183,9 +185,9 @@ int main(){
                 if(mapka[jabuszko.apple_x][jabuszko.apple_y]==32){
                     mapka[jabuszko.apple_x][jabuszko.apple_y]=42;
                     cursor(jabuszko.apple_x+2,2*jabuszko.apple_y);
-                    console_colour(FOREGROUND_RED);     //kolorujemy jabuszko na czerwono
+                    //console_colour(FOREGROUND_RED);     //kolorujemy jabuszko na czerwono
                     std::cout<<"*";
-                    console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
+                    //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
                     znal=1;
                     zjedzone=0;
                 }
