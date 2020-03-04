@@ -47,6 +47,7 @@ void drukuj(int n, char **tab) {
 bool stop=false;
 bool zjedzone;
 bool znal;
+int punkty=0;   //ustawienie poczatkowej wartosci punktow na 0
 std::deque <std::pair<int,int> > snek;
 void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_back, char direction, char **tab,int size){
     while(!stop){
@@ -70,6 +71,7 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
             //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
             if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
                 zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
+		    punkty+=10;     //dodawanie 10 punktow do puli gdy zjesz jabluszko
             }
             else{
                 tab[coordinates_back.first][coordinates_back.second]=32;
@@ -110,6 +112,7 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
             //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
             if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
                 zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
+		    punkty+=10;     //dodawanie 10 punktow do puli gdy zjesz jabluszko
             }
             else{
                 tab[coordinates_back.first][coordinates_back.second]=32;
@@ -150,6 +153,7 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
             //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
             if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
                 zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
+		    punkty+=10;     //dodawanie 10 punktow do puli gdy zjesz jabluszko
             }
             else{
                 tab[coordinates_back.first][coordinates_back.second]=32;
@@ -190,6 +194,7 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
             //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
             if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
                 zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
+		punkty+=10;     //dodawanie 10 punktow do puli gdy zjesz jabluszko
             }
             else{
                 tab[coordinates_back.first][coordinates_back.second]=32;
@@ -220,6 +225,7 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
 int main(){
    // PlaySound(TEXT("theme-music.wav"), NULL, SND_ASYNC | SND_LOOP) ;
   //  hidecursor();       //wywolanie funkcji ukrywajacej kursor
+    std::fstream wynik;    //stworzenie pliku tekstowego gdzie bedzie zapisywany wynik rozgrywki
     int s;
     srand(GetTickCount());
     std::cout<<"Podaj rozmiar planszy:"<<std::endl;
@@ -286,4 +292,22 @@ int main(){
         }
         stop=false;
     }
+	if(przegrana==1){ //petla obslugujaca co sie stanie po przegranej
+    	wynik.open("wyniki.txt", std::ios::in | std::ios::out); //otwieramy plik tekstowy z wynikami
+    	double liczba;  
+    	wynik>>liczba;  //odczytujemy z pliku stary wynik rozgrywki
+    	if(punkty>liczba){ //jesli nowy wynik jest wiekszy od starego...
+    		wynik<<punkty; //zastepujemy stary wynik nowym
+    		std::cout<<" GRATULACJE POBILES REKORD!! - "<<punkty<<" PKT";
+		}
+		else{
+			wynik<<liczba; //jesli nie pozostawiamy tak jak bylo wczesniej
+			std::cout<<"przegrales!"<<" twoj rekord: "<<liczba;
+		}
+    	wynik.close(); //zamykamy plik odczyt i zapis dalej niemozliwy
+	stop=true;
+    	return 0;
+	}
+	
+	
 }
