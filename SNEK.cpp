@@ -38,8 +38,8 @@ void drukuj(int n, char **tab) {
             std::cout << tab[i][j];
             //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
             if ((i == 0 || i == n - 1 || j==0 || j==n-2)&&(j!=n-1)) console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);    //kolorujemy ramki planszy
-                std::cout << " ";
-                //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
+            std::cout << " ";
+            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
         }
         std::cout << std::endl;
     }
@@ -223,7 +223,7 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
     }
 }
 int main(){
-   // PlaySound(TEXT("theme-music.wav"), NULL, SND_ASYNC | SND_LOOP) ;
+   //PlaySound(TEXT("theme-music.wav"), NULL, SND_ASYNC | SND_LOOP) ;
   //  hidecursor();       //wywolanie funkcji ukrywajacej kursor
     std::fstream wynik;    //stworzenie pliku tekstowego gdzie bedzie zapisywany wynik rozgrywki
     int s;
@@ -249,7 +249,7 @@ int main(){
     bool przegrana=0;
     znal=0;
     char direction;
-    drukuj(s,mapka);  	
+    drukuj(s,mapka);
     direction='u';
     bool zjedzone=1;
     while(przegrana==0){
@@ -294,7 +294,7 @@ int main(){
     }
 	if(przegrana==1){ //petla obslugujaca co sie stanie po przegranej
     	wynik.open("wyniki.txt", std::ios::in | std::ios::out); //otwieramy plik tekstowy z wynikami
-    	double liczba;  
+    	double liczba;
     	wynik>>liczba;  //odczytujemy z pliku stary wynik rozgrywki
     	if(punkty>liczba){ //jesli nowy wynik jest wiekszy od starego...
     		wynik<<punkty; //zastepujemy stary wynik nowym
@@ -308,6 +308,6 @@ int main(){
 	stop=true;
     	return 0;
 	}
-	
-	
+
+
 }
