@@ -12,7 +12,12 @@ int losowanko(int n){       //generowanie losowych liczb w zaleznosci od rozmiar
 struct Apple{       //tworzenie jabuszka
     int apple_x;
     int apple_y;
-};    Apple jabuszko;
+};
+Apple jabuszko;
+int GameOver(){
+    system ("cls");
+    return 0;
+}
 void hidecursor(){              //funkcja do ukrywania kursora
     HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO info;
@@ -47,6 +52,7 @@ void drukuj(int n, char **tab) {
 bool stop=false;
 bool zjedzone;
 bool znal;
+bool fail;
 int punkty=0;   //ustawienie poczatkowej wartosci punktow na 0
 std::deque <std::pair<int,int> > snek;
 void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_back, char direction, char **tab,int size){
@@ -61,6 +67,10 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
             //console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
             std::cout<<"o";
             coordinates_front.first=(coordinates_front.first+1)%(size-1);  //wskazanie przyszlej pozycji glowy
+            if(tab[coordinates_front.first][coordinates_front.second]==111) { //przegrana, gdy wjedzie sam w siebie
+                fail=1;
+                break;
+            }
             if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
                 coordinates_front.first=1;
             }
@@ -102,6 +112,10 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
             //console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
             std::cout<<"o";
             coordinates_front.first=(coordinates_front.first-1)%(size-2);  //wskazanie przyszlej pozycji glowy
+            if(tab[coordinates_front.first][coordinates_front.second]==111) { //przegrana, gdy wjedzie sam w siebie
+                fail=1;
+                break;
+            }
             if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
                 coordinates_front.first=size-2;
             }
@@ -143,6 +157,10 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
             //console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
             std::cout<<"o";
             coordinates_front.second=(coordinates_front.second-1)%(size-2);  //wskazanie przyszlej pozycji glowy
+            if(tab[coordinates_front.first][coordinates_front.second]==111) { //przegrana, gdy wjedzie sam w siebie
+                fail=1;
+                break;
+            }
             if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
                 coordinates_front.second=size-2;
             }
@@ -184,6 +202,10 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
             //console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
             std::cout<<"o";
             coordinates_front.second=(coordinates_front.second+1)%(size-1);  //wskazanie przyszlej pozycji glowy
+            if(tab[coordinates_front.first][coordinates_front.second]==111) { //przegrana, gdy wjedzie sam w siebie
+                fail=1;
+                break;
+            }
             if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
                 coordinates_front.second=1;
             }
@@ -246,13 +268,12 @@ int main(){
     }
     snek.push_front(std::make_pair((s-1)/2,(s-1)/2));   //ustawienie glowy weza na srodku
     mapka[(s-1)/2][(s-1)/2]='O';
-    bool przegrana=0;
     znal=0;
     char direction;
     drukuj(s,mapka);
     direction='u';
     bool zjedzone=1;
-    while(przegrana==0){
+    while(fail==0){
       //  hidecursor();
         char kierunek=0;
         znal=0;
@@ -292,8 +313,9 @@ int main(){
         }
         stop=false;
     }
-	if(przegrana==1){ //petla obslugujaca co sie stanie po przegranej
-    	wynik.open("wyniki.txt", std::ios::in | std::ios::out); //otwieramy plik tekstowy z wynikami
+    if(fail==1){ //petla obslugujaca co sie stanie po przegranej
+        GameOver();
+    	/*wynik.open("wyniki.txt", std::ios::in | std::ios::out); //otwieramy plik tekstowy z wynikami
     	double liczba;
     	wynik>>liczba;  //odczytujemy z pliku stary wynik rozgrywki
     	if(punkty>liczba){ //jesli nowy wynik jest wiekszy od starego...
@@ -304,9 +326,10 @@ int main(){
 			wynik<<liczba; //jesli nie pozostawiamy tak jak bylo wczesniej
 			std::cout<<"przegrales!"<<" twoj rekord: "<<liczba;
 		}
-    	wynik.close(); //zamykamy plik odczyt i zapis dalej niemozliwy
+    	wynik.close(); //zamykamy plik odczyt i zapis dalej niemozliwy*/
 	stop=true;
-    	return 0;
+	return 0;
+
 	}
 
 
