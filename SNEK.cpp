@@ -53,6 +53,7 @@ bool stop=false;
 bool zjedzone;
 bool znal;
 bool fail;
+int a;
 int punkty=0;   //ustawienie poczatkowej wartosci punktow na 0
 std::deque <std::pair<int,int> > snek;
 void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_back, char direction, char **tab,int size){
@@ -70,6 +71,12 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
             if(tab[coordinates_front.first][coordinates_front.second]==111) { //przegrana, gdy wjedzie sam w siebie
                 fail=1;
                 break;
+            }
+            if(a==2){
+                if(tab[coordinates_front.first][coordinates_front.second]==35) {
+                    fail=1;
+                    break;
+                }
             }
             if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
                 coordinates_front.first=1;
@@ -116,6 +123,12 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
                 fail=1;
                 break;
             }
+            if(a==2){
+                if(tab[coordinates_front.first][coordinates_front.second]==35) {
+                    fail=1;
+                    break;
+                }
+            }
             if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
                 coordinates_front.first=size-2;
             }
@@ -160,6 +173,12 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
             if(tab[coordinates_front.first][coordinates_front.second]==111) { //przegrana, gdy wjedzie sam w siebie
                 fail=1;
                 break;
+            }
+            if(a==2){
+                if(tab[coordinates_front.first][coordinates_front.second]==35) {
+                    fail=1;
+                    break;
+                }
             }
             if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
                 coordinates_front.second=size-2;
@@ -206,6 +225,12 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
                 fail=1;
                 break;
             }
+            if(a==2){
+                if(tab[coordinates_front.first][coordinates_front.second]==35) {
+                    fail=1;
+                    break;
+                }
+            }
             if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
                 coordinates_front.second=1;
             }
@@ -251,6 +276,13 @@ int main(){
     std::fstream wynik;    //stworzenie pliku tekstowego gdzie bedzie zapisywany wynik rozgrywki
     int s;
     srand(GetTickCount());
+    std::cout<<"Wybierz opcje sposrod:"<<std::endl<<"1. Waz przechodzi przez sciany."<<std::endl<<"2. Waz zabija sie na scianach."<<std::endl;
+    std::cin>>a;
+    while(a!=1 && a!=2){
+        std::cout<<"Wpisano zla cyfre. Wybierz 1 lub 2: ";
+        std::cin>>a;
+    }
+    system("cls");
     std::cout<<"Podaj rozmiar planszy:"<<std::endl;
     std::cin>>s;
     char **mapka;
