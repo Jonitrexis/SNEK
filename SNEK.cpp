@@ -72,7 +72,7 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
                 fail=1;
                 break;
             }
-            if(a==2){
+            if(a==2){ //przegrana, jezeli waz wejdzie w sciane
                 if(tab[coordinates_front.first][coordinates_front.second]==35) {
                     fail=1;
                     break;
@@ -123,7 +123,7 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
                 fail=1;
                 break;
             }
-            if(a==2){
+            if(a==2){ //przegrana, jezeli waz wejdzie w sciane
                 if(tab[coordinates_front.first][coordinates_front.second]==35) {
                     fail=1;
                     break;
@@ -174,7 +174,7 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
                 fail=1;
                 break;
             }
-            if(a==2){
+            if(a==2){ //przegrana, jezeli waz wejdzie w sciane
                 if(tab[coordinates_front.first][coordinates_front.second]==35) {
                     fail=1;
                     break;
@@ -225,7 +225,7 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
                 fail=1;
                 break;
             }
-            if(a==2){
+            if(a==2){ //przegrana, jezeli waz wejdzie w sciane
                 if(tab[coordinates_front.first][coordinates_front.second]==35) {
                     fail=1;
                     break;
@@ -276,7 +276,7 @@ int main(){
     std::fstream wynik;    //stworzenie pliku tekstowego gdzie bedzie zapisywany wynik rozgrywki
     int s;
     srand(GetTickCount());
-    std::cout<<"Wybierz opcje sposrod:"<<std::endl<<"1. Waz przechodzi przez sciany."<<std::endl<<"2. Waz zabija sie na scianach."<<std::endl;
+    std::cout<<"Wybierz opcje sposrod:"<<std::endl<<"1. Waz przechodzi przez sciany."<<std::endl<<"2. Waz zabija sie na scianach."<<std::endl; //wybieranie opcji gry w kwestii umierania weza
     std::cin>>a;
     while(a!=1 && a!=2){
         std::cout<<"Wpisano zla cyfre. Wybierz 1 lub 2: ";
