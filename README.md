@@ -6,7 +6,7 @@ Projekt na zajęcia z Programowania
 3. [ ] Przeszkody
 4. [ ] Specjalne jabłka/jedzenie
 5. [ ] Różne pozimy trudności (szybciej się wąż porusza)
-6. [ ] Samoporuszający się snek
+6. [x] Samoporuszający się snek (j)
 7. [ ] Wszystkie warunki przegranej:
 8. [ ] Warunek pierwszy: Jechanie w ścianę
 9. [ ] Warunek drugi: Zjedzenie samego siebie
