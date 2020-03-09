@@ -247,6 +247,7 @@ void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_b
 int main(){
    //PlaySound(TEXT("theme-music.wav"), NULL, SND_ASYNC | SND_LOOP) ;
   //  hidecursor();       //wywolanie funkcji ukrywajacej kursor
+    SetConsoleTitle("SNAKE"); //zmienia nazwe konsoli
     std::fstream wynik;    //stworzenie pliku tekstowego gdzie bedzie zapisywany wynik rozgrywki
     int s;
     srand(GetTickCount());
@@ -315,7 +316,7 @@ int main(){
     }
     if(fail==1){ //petla obslugujaca co sie stanie po przegranej
         GameOver();
-    	/*wynik.open("wyniki.txt", std::ios::in | std::ios::out); //otwieramy plik tekstowy z wynikami
+    	wynik.open("wyniki.txt", std::ios::in | std::ios::out); //otwieramy plik tekstowy z wynikami
     	double liczba;
     	wynik>>liczba;  //odczytujemy z pliku stary wynik rozgrywki
     	if(punkty>liczba){ //jesli nowy wynik jest wiekszy od starego...
@@ -324,9 +325,9 @@ int main(){
 		}
 		else{
 			wynik<<liczba; //jesli nie pozostawiamy tak jak bylo wczesniej
-			std::cout<<"przegrales!"<<" twoj rekord: "<<liczba;
+			std::cout<<"Przegrales! Twoje punkty: "<<punkty<<" PKT"<<std::endl<<"Obecny rekord: "<<liczba<<" PKT";
 		}
-    	wynik.close(); //zamykamy plik odczyt i zapis dalej niemozliwy*/
+    	wynik.close(); //zamykamy plik odczyt i zapis dalej niemozliwy
 	stop=true;
 	return 0;
 
