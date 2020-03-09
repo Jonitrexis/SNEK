@@ -1,5 +1,6 @@
 # SNEK
 Projekt na zajęcia z Programowania
+
 ## TODO:
 1. [ ] Dźwięki jedzenia jabłka
 2. [x] Muzyczka w tle (Kinga)
