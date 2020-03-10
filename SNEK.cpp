@@ -5,365 +5,390 @@
 #include <mmsystem.h>
 #include <unistd.h>
 #include <chrono>
+
 #define SPEED 200
-int losowanko(int n){       //generowanie losowych liczb w zaleznosci od rozmiaru planszy
-    return rand()%n;
+#define spacebar 32
+#define hash 35
+#define star 42
+
+int random_apple_coordinates(int n) {       //generowanie losowych liczb w zaleznosci od rozmiaru planszy
+    return rand() % n;
 }
-struct Apple{       //tworzenie jabuszka
-    int apple_x;
-    int apple_y;
+
+struct Apple {       //creating an apple
+    int x;
+    int y;
 };
-Apple jabuszko;
-int GameOver(){
-    system ("cls");
-    return 0;
+Apple apple;
+
+void GameOver() {
+    system("cls");     //clearing the screen and exiting the game after the player looses
 }
-void hidecursor(){              //funkcja do ukrywania kursora
+
+void hidecursor() {              //function to hide coursor
     HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO info;
     info.dwSize = 100;
     info.bVisible = FALSE;
     SetConsoleCursorInfo(consoleHandle, &info);
 }
-void cursor(int y, int x){      //funkcja do ustawiania pozycji kursora
+
+void set_cursor_position(int y, int x) {      //function setting cursor posiotion
     static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     std::cout.flush();
-    COORD coord = { (SHORT)x, (SHORT)y };
+    COORD coord = {(SHORT) x, (SHORT) y};
     SetConsoleCursorPosition(hOut, coord);
 }
-void console_colour(unsigned short colour){     //zabawa z kolorowaniem terminala
+
+void set_console_colour(unsigned short colour) {     //function setting terminal colours
     static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     std::cout.flush();
     SetConsoleTextAttribute(hOut, colour);
 }
-void drukuj(int n, char **tab) {
+
+void print_game_map(int n, char **_game_map) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            if (i == 0 || i == n - 1 || j == 0 || j == n - 1)   console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);        //kolorujemy ramki planszy
-            std::cout << tab[i][j];
-            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
-            if ((i == 0 || i == n - 1 || j==0 || j==n-2)&&(j!=n-1)) console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);    //kolorujemy ramki planszy
+            if (i == 0 || i == n - 1 || j == 0 || j == n - 1)
+                set_console_colour(
+                        BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);        //settign colour of the borders
+            std::cout << _game_map[i][j];
+            //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
+            if ((i == 0 || i == n - 1 || j == 0 || j == n - 2) && (j != n - 1))
+                set_console_colour(
+                        BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);    //settign colour of the borders
             std::cout << " ";
-            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
+            //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
         }
         std::cout << std::endl;
     }
 }
-bool stop=false;
-bool zjedzone;
-bool znal;
+
+bool stop = false;
+bool if_apple_eaten;
+bool apple_found;
 bool fail;
 int a;
-int punkty=0;   //ustawienie poczatkowej wartosci punktow na 0
-std::deque <std::pair<int,int> > snek;
-void ruch(std::pair<int,int> coordinates_front, std::pair<int,int> coordinates_back, char direction, char **tab,int size){
-    while(!stop){
-        znal=0;
-		coordinates_front=snek.front();      //koordynaty glowy weza
-        coordinates_back=snek.back();
-        if(direction=='d'){
-        	znal=0;
-            tab[snek[0].first][snek[0].second]='o';
-            cursor(snek[0].first+2,2*snek[0].second);   //ustawienie obecnej glowy na cialo
-            //console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
-            std::cout<<"o";
-            coordinates_front.first=(coordinates_front.first+1)%(size-1);  //wskazanie przyszlej pozycji glowy
-            if(tab[coordinates_front.first][coordinates_front.second]==111) { //przegrana, gdy wjedzie sam w siebie
-                fail=1;
+int points = 0;   //setting gamepoints to 0
+std::deque<std::pair<int, int> > snek;
+
+void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates_back, char direction, char **_game_map,
+          int size) {
+    while (!stop) {
+        apple_found = false;
+        coordinates_front = snek.front();      //snake head coordinates
+        coordinates_back = snek.back();
+        if (direction == 'd') {
+            apple_found = false;
+            _game_map[snek[0].first][snek[0].second] = 'o';
+            set_cursor_position(snek[0].first + 2, 2 * snek[0].second);   //setting current head as a body
+            //set_console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //setting snake colour to green
+            std::cout << "o";
+            coordinates_front.first =
+                    (coordinates_front.first + 1) % (size - 1);  //setting next snakes' head coordinates
+            if (_game_map[coordinates_front.first][coordinates_front.second] ==
+                111) { //player looses if snake tries to eat itself
+                fail = true;
                 break;
             }
-            if(a==2){ //przegrana, jezeli waz wejdzie w sciane
-                if(tab[coordinates_front.first][coordinates_front.second]==35) {
-                    fail=1;
+            if (a == 2) { //loosing the game if snake tries to eat the wall
+                if (_game_map[coordinates_front.first][coordinates_front.second] == hash) {
+                    fail = true;
                     break;
                 }
             }
-            if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
-                coordinates_front.first=1;
+            if (_game_map[coordinates_front.first][coordinates_front.second] == hash) {   //if snake goes into the wall
+                coordinates_front.first = 1;
             }
             snek.push_front(coordinates_front);
-            tab[snek[0].first][snek[0].second]='O';
-            cursor(snek[0].first+2,2*snek[0].second);   //ustawienie glowy na nowej pozycji
-            std::cout<<"O";
-            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
-            if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
-                zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
-		    punkty+=10;     //dodawanie 10 punktow do puli gdy zjesz jabluszko
-            }
-            else{
-                tab[coordinates_back.first][coordinates_back.second]=32;
-                cursor(coordinates_back.first+2,2*coordinates_back.second);     //wymazywanie ogona, gdy nie jemy jabuszka
-                std::cout<<" ";
+            _game_map[snek[0].first][snek[0].second] = 'O';
+            set_cursor_position(snek[0].first + 2, 2 * snek[0].second);   //setting snakes' head to new position
+            std::cout << "O";
+            //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
+            if (coordinates_front.first == apple.x && coordinates_front.second == apple.y) {
+                if_apple_eaten = true;     //setting apple to eaten, no need to erase snakes' tail
+                points += 10;     //adding 10 points if you eat an apple
+            } else {
+                _game_map[coordinates_back.first][coordinates_back.second] = spacebar;
+                set_cursor_position(coordinates_back.first + 2,
+                                    2 * coordinates_back.second);     //erasing the tail if apple was not eaten
+                std::cout << " ";
                 snek.pop_back();
             }
-                    if(zjedzone==1){
-            while(znal==0){
-                jabuszko.apple_x=losowanko(size);
-                jabuszko.apple_y=losowanko(size);
-                if(tab[jabuszko.apple_x][jabuszko.apple_y]==32){
-                    tab[jabuszko.apple_x][jabuszko.apple_y]=42;
-                    cursor(jabuszko.apple_x+2,2*jabuszko.apple_y);
-                    //console_colour(FOREGROUND_RED);     //kolorujemy jabuszko na czerwono
-                    std::cout<<"*";
-                    //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
-                    znal=1;
-                    zjedzone=0;
+            if (if_apple_eaten == 1) {
+                while (apple_found == 0) {
+                    apple.x = random_apple_coordinates(size);
+                    apple.y = random_apple_coordinates(size);
+                    if (_game_map[apple.x][apple.y] == spacebar) {
+                        _game_map[apple.x][apple.y] = star;
+                        set_cursor_position(apple.x + 2, 2 * apple.y);
+                        //set_console_colour(FOREGROUND_RED);     //setting apple colour to red
+                        std::cout << "*";
+                        //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
+                        apple_found = true;
+                        if_apple_eaten = false;
+                    }
                 }
             }
         }
-        }
-        if(direction=='u'){
-        	znal=0;
-            tab[snek[0].first][snek[0].second]='o';
-            cursor(snek[0].first+2,2*snek[0].second);   //ustawienie obecnej glowy na cialo
-            //console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
-            std::cout<<"o";
-            coordinates_front.first=(coordinates_front.first-1)%(size-2);  //wskazanie przyszlej pozycji glowy
-            if(tab[coordinates_front.first][coordinates_front.second]==111) { //przegrana, gdy wjedzie sam w siebie
-                fail=1;
+        if(direction=='u') {
+            apple_found = false;
+            _game_map[snek[0].first][snek[0].second] = 'o';
+            set_cursor_position(snek[0].first + 2, 2 * snek[0].second);   //setting current head as a body
+            //set_console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //setting snake colour to green
+            std::cout << "o";
+            coordinates_front.first =
+                    (coordinates_front.first - 1) % (size - 2);  //setting next snakes' head coordinates
+            if (_game_map[coordinates_front.first][coordinates_front.second] ==
+                111) { //player looses if snake tries to eat itself
+                fail = true;
                 break;
             }
-            if(a==2){ //przegrana, jezeli waz wejdzie w sciane
-                if(tab[coordinates_front.first][coordinates_front.second]==35) {
-                    fail=1;
+            if (a == 2) { //loosing the game if snake tries to eat the wall
+                if (_game_map[coordinates_front.first][coordinates_front.second] == hash) {
+                    fail = true;
                     break;
                 }
             }
-            if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
-                coordinates_front.first=size-2;
+            if (_game_map[coordinates_front.first][coordinates_front.second] == hash) {   //if snake goes into the wall
+                coordinates_front.first = size - 2;
             }
             snek.push_front(coordinates_front);
-            tab[snek[0].first][snek[0].second]='O';
-            cursor(snek[0].first+2,2*snek[0].second);   //ustawienie glowy na nowej pozycji
-            std::cout<<"O";
-            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
-            if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
-                zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
-		    punkty+=10;     //dodawanie 10 punktow do puli gdy zjesz jabluszko
-            }
-            else{
-                tab[coordinates_back.first][coordinates_back.second]=32;
-                cursor(coordinates_back.first+2,2*coordinates_back.second);     //wymazywanie ogona, gdy nie jemy jabuszka
-                std::cout<<" ";
+            _game_map[snek[0].first][snek[0].second] = 'O';
+            set_cursor_position(snek[0].first + 2, 2 * snek[0].second);   //setting snakes' head to new position
+            std::cout << "O";
+            //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
+            if (coordinates_front.first == apple.x && coordinates_front.second == apple.y) {
+                if_apple_eaten = true;     //setting apple to eaten, no need to erase snakes' tail
+                points += 10;     //adding 10 points if you eat an apple
+            } else {
+                _game_map[coordinates_back.first][coordinates_back.second] = spacebar;
+                set_cursor_position(coordinates_back.first + 2,
+                                    2 * coordinates_back.second);     //erasing the tail if apple was not eaten
+                std::cout << " ";
                 snek.pop_back();
             }
-                    if(zjedzone==1){
-            while(znal==0){
-                jabuszko.apple_x=losowanko(size);
-                jabuszko.apple_y=losowanko(size);
-                if(tab[jabuszko.apple_x][jabuszko.apple_y]==32){
-                    tab[jabuszko.apple_x][jabuszko.apple_y]=42;
-                    cursor(jabuszko.apple_x+2,2*jabuszko.apple_y);
-                    //console_colour(FOREGROUND_RED);     //kolorujemy jabuszko na czerwono
-                    std::cout<<"*";
-                    //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
-                    znal=1;
-                    zjedzone=0;
+            if (if_apple_eaten == 1) {
+                while (apple_found == 0) {
+                    apple.x = random_apple_coordinates(size);
+                    apple.y = random_apple_coordinates(size);
+                    if (_game_map[apple.x][apple.y] == spacebar) {
+                        _game_map[apple.x][apple.y] = star;
+                        set_cursor_position(apple.x + 2, 2 * apple.y);
+                        //set_console_colour(FOREGROUND_RED);     //setting apple colour to red
+                        std::cout << "*";
+                        //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
+                        apple_found = true;
+                        if_apple_eaten = false;
+                    }
                 }
             }
         }
-        }
-        if(direction=='l'){
-        	znal=0;
-            tab[snek[0].first][snek[0].second]='o';
-            cursor(snek[0].first+2,2*snek[0].second);   //ustawienie obecnej glowy na cialo
-            //console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
-            std::cout<<"o";
-            coordinates_front.second=(coordinates_front.second-1)%(size-2);  //wskazanie przyszlej pozycji glowy
-            if(tab[coordinates_front.first][coordinates_front.second]==111) { //przegrana, gdy wjedzie sam w siebie
-                fail=1;
+        if(direction=='l') {
+            apple_found = false;
+            _game_map[snek[0].first][snek[0].second] = 'o';
+            set_cursor_position(snek[0].first + 2, 2 * snek[0].second);   //setting current head as a body
+            //set_console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //setting snake colour to green
+            std::cout << "o";
+            coordinates_front.second =
+                    (coordinates_front.second - 1) % (size - 2);  //setting next snakes' head coordinates
+            if (_game_map[coordinates_front.first][coordinates_front.second] ==
+                111) { //player looses if snake tries to eat itself
+                fail = true;
                 break;
             }
-            if(a==2){ //przegrana, jezeli waz wejdzie w sciane
-                if(tab[coordinates_front.first][coordinates_front.second]==35) {
-                    fail=1;
+            if (a == 2) { //loosing the game if snake tries to eat the wall
+                if (_game_map[coordinates_front.first][coordinates_front.second] == hash) {
+                    fail = true;
                     break;
                 }
             }
-            if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
-                coordinates_front.second=size-2;
+            if (_game_map[coordinates_front.first][coordinates_front.second] == hash) {   //if snake goes into the wall
+                coordinates_front.second = size - 2;
             }
             snek.push_front(coordinates_front);
-            tab[snek[0].first][snek[0].second]='O';
-            cursor(snek[0].first+2,2*snek[0].second);   //ustawienie glowy na nowej pozycji
-            std::cout<<"O";
-            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
-            if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
-                zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
-		    punkty+=10;     //dodawanie 10 punktow do puli gdy zjesz jabluszko
-            }
-            else{
-                tab[coordinates_back.first][coordinates_back.second]=32;
-                cursor(coordinates_back.first+2,2*coordinates_back.second);     //wymazywanie ogona, gdy nie jemy jabuszka
-                std::cout<<" ";
+            _game_map[snek[0].first][snek[0].second] = 'O';
+            set_cursor_position(snek[0].first + 2, 2 * snek[0].second);   //setting snakes' head to new position
+            std::cout << "O";
+            //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
+            if (coordinates_front.first == apple.x && coordinates_front.second == apple.y) {
+                if_apple_eaten = true;     //setting apple to eaten, no need to erase snakes' tail
+                points += 10;     //adding 10 points if you eat an apple
+            } else {
+                _game_map[coordinates_back.first][coordinates_back.second] = spacebar;
+                set_cursor_position(coordinates_back.first + 2,
+                                    2 * coordinates_back.second);     //erasing the tail if apple was not eaten
+                std::cout << " ";
                 snek.pop_back();
             }
-                    if(zjedzone==1){
-            while(znal==0){
-                jabuszko.apple_x=losowanko(size);
-                jabuszko.apple_y=losowanko(size);
-                if(tab[jabuszko.apple_x][jabuszko.apple_y]==32){
-                    tab[jabuszko.apple_x][jabuszko.apple_y]=42;
-                    cursor(jabuszko.apple_x+2,2*jabuszko.apple_y);
-                    //console_colour(FOREGROUND_RED);     //kolorujemy jabuszko na czerwono
-                    std::cout<<"*";
-                    //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
-                    znal=1;
-                    zjedzone=0;
+            if (if_apple_eaten == 1) {
+                while (apple_found == 0) {
+                    apple.x = random_apple_coordinates(size);
+                    apple.y = random_apple_coordinates(size);
+                    if (_game_map[apple.x][apple.y] == spacebar) {
+                        _game_map[apple.x][apple.y] = star;
+                        set_cursor_position(apple.x + 2, 2 * apple.y);
+                        //set_console_colour(FOREGROUND_RED);     //setting apple colour to red
+                        std::cout << "*";
+                        //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
+                        apple_found = true;
+                        if_apple_eaten = false;
+                    }
                 }
             }
         }
-        }
-        if(direction=='r'){
-        	znal=0;
-            tab[snek[0].first][snek[0].second]='o';
-            cursor(snek[0].first+2,2*snek[0].second);   //ustawienie obecnej glowy na cialo
-            //console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //kolorujemy weza na zielono
-            std::cout<<"o";
-            coordinates_front.second=(coordinates_front.second+1)%(size-1);  //wskazanie przyszlej pozycji glowy
-            if(tab[coordinates_front.first][coordinates_front.second]==111) { //przegrana, gdy wjedzie sam w siebie
-                fail=1;
+        if(direction=='r') {
+            apple_found = false;
+            _game_map[snek[0].first][snek[0].second] = 'o';
+            set_cursor_position(snek[0].first + 2, 2 * snek[0].second);   //setting current head as a body
+            //set_console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //setting snake colour to green
+            std::cout << "o";
+            coordinates_front.second =
+                    (coordinates_front.second + 1) % (size - 1);  //setting next snakes' head coordinates
+            if (_game_map[coordinates_front.first][coordinates_front.second] ==
+                111) { //player looses if snake tries to eat itself
+                fail = true;
                 break;
             }
-            if(a==2){ //przegrana, jezeli waz wejdzie w sciane
-                if(tab[coordinates_front.first][coordinates_front.second]==35) {
-                    fail=1;
+            if (a == 2) { //loosing the game if snake tries to eat the wall
+                if (_game_map[coordinates_front.first][coordinates_front.second] == hash) {
+                    fail = true;
                     break;
                 }
             }
-            if(tab[coordinates_front.first][coordinates_front.second]==35){   //jesli wychodzimy poza plansze
-                coordinates_front.second=1;
+            if (_game_map[coordinates_front.first][coordinates_front.second] == hash) {   //if snake goes into the wall
+                coordinates_front.second = 1;
             }
             snek.push_front(coordinates_front);
-            tab[snek[0].first][snek[0].second]='O';
-            cursor(snek[0].first+2,2*snek[0].second);   //ustawienie glowy na nowej pozycji
-            std::cout<<"O";
-            //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
-            if(coordinates_front.first==jabuszko.apple_x && coordinates_front.second==jabuszko.apple_y){
-                zjedzone=1;     //ustawienie jabuszka na zjedzone, nie trzeba wymazywac ogona
-		punkty+=10;     //dodawanie 10 punktow do puli gdy zjesz jabluszko
-            }
-            else{
-                tab[coordinates_back.first][coordinates_back.second]=32;
-                cursor(coordinates_back.first+2,2*coordinates_back.second);     //wymazywanie ogona, gdy nie jemy jabuszka
-                std::cout<<" ";
+            _game_map[snek[0].first][snek[0].second] = 'O';
+            set_cursor_position(snek[0].first + 2, 2 * snek[0].second);   //setting snakes' head to new position
+            std::cout << "O";
+            //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
+            if (coordinates_front.first == apple.x && coordinates_front.second == apple.y) {
+                if_apple_eaten = true;     //setting apple to eaten, no need to erase snakes' tail
+                points += 10;     //adding 10 points if you eat an apple
+            } else {
+                _game_map[coordinates_back.first][coordinates_back.second] = spacebar;
+                set_cursor_position(coordinates_back.first + 2,
+                                    2 * coordinates_back.second);     //erasing the tail if apple was not eaten
+                std::cout << " ";
                 snek.pop_back();
             }
-                    if(zjedzone==1){
-            while(znal==0){
-                jabuszko.apple_x=losowanko(size);
-                jabuszko.apple_y=losowanko(size);
-                if(tab[jabuszko.apple_x][jabuszko.apple_y]==32){
-                    tab[jabuszko.apple_x][jabuszko.apple_y]=42;
-                    cursor(jabuszko.apple_x+2,2*jabuszko.apple_y);
-                    //console_colour(FOREGROUND_RED);     //kolorujemy jabuszko na czerwono
-                    std::cout<<"*";
-                    //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
-                    znal=1;
-                    zjedzone=0;
+            if (if_apple_eaten == 1) {
+                while (apple_found == 0) {
+                    apple.x = random_apple_coordinates(size);
+                    apple.y = random_apple_coordinates(size);
+                    if (_game_map[apple.x][apple.y] == spacebar) {
+                        _game_map[apple.x][apple.y] = star;
+                        set_cursor_position(apple.x + 2, 2 * apple.y);
+                        //set_console_colour(FOREGROUND_RED);     //setting apple colour to red
+                        std::cout << "*";
+                        //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
+                        apple_found = true;
+                        if_apple_eaten = false;
+                    }
                 }
             }
-        }
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(SPEED));
     }
 }
-int main(){
-   //PlaySound(TEXT("theme-music.wav"), NULL, SND_ASYNC | SND_LOOP) ;
-  //  hidecursor();       //wywolanie funkcji ukrywajacej kursor
-    SetConsoleTitle("SNAKE"); //zmienia nazwe konsoli
-    std::fstream wynik;    //stworzenie pliku tekstowego gdzie bedzie zapisywany wynik rozgrywki
-    int s;
+int main() {
+    //PlaySound(TEXT("theme-music.wav"), NULL, SND_ASYNC | SND_LOOP) ;       //function to play music in background
+    //  hidecursor();       //running fonction to hide cursor
+    SetConsoleTitle("SNAKE"); //changing console title
+    std::fstream wynik;    //creating .txt file with gamescore
+    int map_size;
     srand(GetTickCount());
-    std::cout<<"Wybierz opcje sposrod:"<<std::endl<<"1. Waz przechodzi przez sciany."<<std::endl<<"2. Waz zabija sie na scianach."<<std::endl; //wybieranie opcji gry w kwestii umierania weza
-    std::cin>>a;
-    while(a!=1 && a!=2){
-        std::cout<<"Wpisano zla cyfre. Wybierz 1 lub 2: ";
-        std::cin>>a;
+    std::cout << "Choose gamemode:" << std::endl << "1. Snake can go through walls." << std::endl
+              << "2. Snake dies if runs into the wall." << std::endl; //choosing gamemode
+    std::cin >> a;
+    while (a != 1 && a != 2) {
+        std::cout << "Wrong number, choose \"1\" or \"2\": ";
+        std::cin >> a;
     }
     system("cls");
-    std::cout<<"Podaj rozmiar planszy:"<<std::endl;
-    std::cin>>s;
-    char **mapka;
-    mapka=new char *[s];
-    for(int i=0;i<s;i++)    mapka[i]=new char[s];
-    for(int i=0;i<s;i++){
-        for(int j=0;j<s;j++){
-            mapka[i][j]=32; //spacja
+    std::cout << "Choose map size:" << std::endl;
+    std::cin >> map_size;
+    char **game_map;
+    game_map = new char *[map_size];
+    for (int i = 0; i < map_size; i++) game_map[i] = new char[map_size];
+    for (int i = 0; i < map_size; i++) {
+        for (int j = 0; j < map_size; j++) {
+            game_map[i][j] = spacebar; //spacebar
         }
     }
-    for(int i=0;i<s;i++){       //haszowanie ramek
-        mapka[0][i]=35;// hasz
-        mapka[i][0]=35;
-        mapka[s-1][i]=35;
-        mapka[i][s-1]=35;
+    for (int i = 0; i < map_size; i++) {       //setting botders to hash
+        game_map[0][i] = hash;// hasz
+        game_map[i][0] = hash;
+        game_map[map_size - 1][i] = hash;
+        game_map[i][map_size - 1] = hash;
     }
-    snek.push_front(std::make_pair((s-1)/2,(s-1)/2));   //ustawienie glowy weza na srodku
-    mapka[(s-1)/2][(s-1)/2]='O';
-    znal=0;
+    snek.push_front(
+            std::make_pair((map_size - 1) / 2, (map_size - 1) / 2));   //setting snakes' head coordinates in the middle
+    game_map[(map_size - 1) / 2][(map_size - 1) / 2] = 'O';
+    apple_found = false;
     char direction;
-    drukuj(s,mapka);
-    direction='u';
-    bool zjedzone=1;
-    while(fail==0){
-      //  hidecursor();
-        char kierunek=0;
-        znal=0;
-        zjedzone==1;
-        std::pair<int,int> coordinates_front=snek.front();      //koordynaty glowy weza
-        std::pair<int,int> coordinates_back=snek.back();        //koordynaty ogona weza
-        std::thread t(ruch,snek.front(),snek.back(),direction,mapka,s);
-        kierunek=_getch();
-        stop=true;
+    print_game_map(map_size, game_map);
+    direction = 'u';
+    bool if_apple_eaten = true;
+    while (fail == 0) {
+        //  hidecursor();
+        char _key_press = 0;
+        apple_found = false;
+        if_apple_eaten == true;
+        std::thread t(ruch, snek.front(), snek.back(), direction, game_map, map_size);
+        _key_press = _getch();
+        stop = true;
         t.join();
-        if(kierunek==72){   //UP
-            direction='u';
+        if (_key_press == 72) {   //UP
+            direction = 'u';
         }
-        if(kierunek==80){   //DOWN
-            direction='d';
+        if (_key_press == 80) {   //DOWN
+            direction = 'd';
         }
-        if(kierunek==75){   //LEFT
-            direction='l';
+        if (_key_press == 75) {   //LEFT
+            direction = 'l';
         }
-        if(kierunek==77){   //RIGHT
-            direction='r';
+        if (_key_press == 77) {   //RIGHT
+            direction = 'r';
         }
-        if(zjedzone==1){
-            while(znal==0){
-                jabuszko.apple_x=losowanko(s);
-                jabuszko.apple_y=losowanko(s);
-                if(mapka[jabuszko.apple_x][jabuszko.apple_y]==32){
-                    mapka[jabuszko.apple_x][jabuszko.apple_y]=42;
-                    cursor(jabuszko.apple_x+2,2*jabuszko.apple_y);
-                    //console_colour(FOREGROUND_RED);     //kolorujemy jabuszko na czerwono
-                    std::cout<<"*";
-                    //console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // ustawiamy standardowe ustawienia kolorow tekstu i tla konsoli
-                    znal=1;
-                    zjedzone=0;
+        if (if_apple_eaten == 1) {
+            while (apple_found == 0) {
+                apple.x = random_apple_coordinates(map_size);
+                apple.y = random_apple_coordinates(map_size);
+                if (game_map[apple.x][apple.y] == spacebar) {
+                    game_map[apple.x][apple.y] = star;
+                    set_cursor_position(apple.x + 2, 2 * apple.y);
+                    //set_console_colour(FOREGROUND_RED);     //setting apple colour to red
+                    std::cout << "*";
+                    //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
+                    apple_found = true;
+                    if_apple_eaten = false;
                 }
             }
         }
-        stop=false;
+        stop = false;
     }
-    if(fail==1){ //petla obslugujaca co sie stanie po przegranej
+    if (fail == 1) { //what happens after loosing game
         GameOver();
-    	wynik.open("wyniki.txt", std::ios::in | std::ios::out); //otwieramy plik tekstowy z wynikami
-    	double liczba;
-    	wynik>>liczba;  //odczytujemy z pliku stary wynik rozgrywki
-    	if(punkty>liczba){ //jesli nowy wynik jest wiekszy od starego...
-    		wynik<<punkty; //zastepujemy stary wynik nowym
-    		std::cout<<" GRATULACJE POBILES REKORD!! - "<<punkty<<" PKT";
-		}
-		else{
-			wynik<<liczba; //jesli nie pozostawiamy tak jak bylo wczesniej
-			std::cout<<"Przegrales! Twoje punkty: "<<punkty<<" PKT"<<std::endl<<"Obecny rekord: "<<liczba<<" PKT";
-		}
-    	wynik.close(); //zamykamy plik odczyt i zapis dalej niemozliwy
-	stop=true;
-	return 0;
+        wynik.open("wyniki.txt", std::ios::in | std::ios::out); //opening .txt file with game results
+        double previous_results;
+        wynik >> previous_results;  //reading previous game results
+        if (points > previous_results) { //if current points are higher then previous results
+            wynik << points; //replacing previous results with new ones
+            std::cout << " CONGRATULATIONS!!! NEW RECORD!!! - " << points << " PKT";
+        } else {
+            wynik << previous_results; //IF RECORD WAS NOT BEATEN
+            std::cout << "You've lost, Your points: " << points << " PKT" << std::endl << "Current record: "
+                      << previous_results << " PKT";
+        }
+        wynik.close(); //closing file
+        stop = true;
+        return 0;
 
-	}
+    }
 
 
 }
