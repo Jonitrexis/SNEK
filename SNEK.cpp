@@ -1,15 +1,9 @@
 #include <bits/stdc++.h>
-
 #include <conio.h>
-
 #include <Windows.h>
-
 #include <thread>
-
 #include <mmsystem.h>
-
 #include <unistd.h>
-
 #include <chrono>
 
 #define SPEED 200
@@ -61,14 +55,17 @@ void print_game_map(int n, char **_game_map) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             if (i == 0 || i == n - 1 || j == 0 || j == n - 1)
-                set_console_colour(
-                        BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED); //settign colour of the borders
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
+                //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED); //settign colour of the borders
             std::cout << _game_map[i][j];
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
+
             //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
             if ((i == 0 || i == n - 1 || j == 0 || j == n - 2) && (j != n - 1))
-                set_console_colour(
-                        BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED); //settign colour of the borders
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
+                //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED); //settign colour of the borders
             std::cout << " ";
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
             //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
         }
         std::cout << std::endl;
@@ -79,7 +76,7 @@ bool stop = false;
 bool if_apple_eaten;
 bool apple_found;
 bool fail;
-int a;
+int a; //for deciding which option you want while playing snake
 int points = 0; //setting gamepoints to 0
 std::deque<std::pair<int, int> > snek;
 
@@ -93,6 +90,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             apple_found = false;
             _game_map[snek[0].first][snek[0].second] = 'o';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); //setting current head as a body
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x000a);
             //set_console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //setting snake colour to green
             std::cout << "o";
             coordinates_front.first =
@@ -115,6 +113,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             _game_map[snek[0].first][snek[0].second] = 'O';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); //setting snakes' head to new position
             std::cout << "O";
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
             //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
             if (coordinates_front.first == apple.x && coordinates_front.second == apple.y) {
                 if_apple_eaten = true; //setting apple to eaten, no need to erase snakes' tail
@@ -133,8 +132,10 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
                     if (_game_map[apple.x][apple.y] == spacebar) {
                         _game_map[apple.x][apple.y] = star;
                         set_cursor_position(apple.x + 2, 2 * apple.y);
+                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0004);
                         //set_console_colour(FOREGROUND_RED);     //setting apple colour to red
                         std::cout << "*";
+                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
                         //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
                         apple_found = true;
                         if_apple_eaten = false;
@@ -146,6 +147,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             apple_found = false;
             _game_map[snek[0].first][snek[0].second] = 'o';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); //setting current head as a body
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x000a);
             //set_console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //setting snake colour to green
             std::cout << "o";
             coordinates_front.first =
@@ -168,6 +170,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             _game_map[snek[0].first][snek[0].second] = 'O';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); //setting snakes' head to new position
             std::cout << "O";
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
             //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
             if (coordinates_front.first == apple.x && coordinates_front.second == apple.y) {
                 if_apple_eaten = true; //setting apple to eaten, no need to erase snakes' tail
@@ -186,8 +189,10 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
                     if (_game_map[apple.x][apple.y] == spacebar) {
                         _game_map[apple.x][apple.y] = star;
                         set_cursor_position(apple.x + 2, 2 * apple.y);
+                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0004);
                         //set_console_colour(FOREGROUND_RED);     //setting apple colour to red
                         std::cout << "*";
+                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
                         //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
                         apple_found = true;
                         if_apple_eaten = false;
@@ -199,6 +204,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             apple_found = false;
             _game_map[snek[0].first][snek[0].second] = 'o';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); //setting current head as a body
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x000a);
             //set_console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //setting snake colour to green
             std::cout << "o";
             coordinates_front.second =
@@ -221,6 +227,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             _game_map[snek[0].first][snek[0].second] = 'O';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); //setting snakes' head to new position
             std::cout << "O";
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
             //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
             if (coordinates_front.first == apple.x && coordinates_front.second == apple.y) {
                 if_apple_eaten = true; //setting apple to eaten, no need to erase snakes' tail
@@ -239,8 +246,10 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
                     if (_game_map[apple.x][apple.y] == spacebar) {
                         _game_map[apple.x][apple.y] = star;
                         set_cursor_position(apple.x + 2, 2 * apple.y);
+                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0004);
                         //set_console_colour(FOREGROUND_RED);     //setting apple colour to red
                         std::cout << "*";
+                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
                         //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
                         apple_found = true;
                         if_apple_eaten = false;
@@ -252,6 +261,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             apple_found = false;
             _game_map[snek[0].first][snek[0].second] = 'o';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); //setting current head as a body
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x000a);
             //set_console_colour(FOREGROUND_GREEN| FOREGROUND_INTENSITY);       //setting snake colour to green
             std::cout << "o";
             coordinates_front.second =
@@ -274,6 +284,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             _game_map[snek[0].first][snek[0].second] = 'O';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); //setting snakes' head to new position
             std::cout << "O";
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
             //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
             if (coordinates_front.first == apple.x && coordinates_front.second == apple.y) {
                 if_apple_eaten = true; //setting apple to eaten, no need to erase snakes' tail
@@ -292,8 +303,10 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
                     if (_game_map[apple.x][apple.y] == spacebar) {
                         _game_map[apple.x][apple.y] = star;
                         set_cursor_position(apple.x + 2, 2 * apple.y);
+                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0004);
                         //set_console_colour(FOREGROUND_RED);     //setting apple colour to red
                         std::cout << "*";
+                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
                         //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
                         apple_found = true;
                         if_apple_eaten = false;
@@ -373,8 +386,10 @@ int main() {
                 if (game_map[apple.x][apple.y] == spacebar) {
                     game_map[apple.x][apple.y] = star;
                     set_cursor_position(apple.x + 2, 2 * apple.y);
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0004);
                     //set_console_colour(FOREGROUND_RED);     //setting apple colour to red
                     std::cout << "*";
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
                     //set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);     // setting default terminal colours
                     apple_found = true;
                     if_apple_eaten = false;
@@ -385,6 +400,7 @@ int main() {
     }
     if (fail == 1) { //what happens after loosing game
         GameOver();
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x000f);
         wynik.open("wyniki.txt", std::ios::in | std::ios::out); //opening .txt file with game results
         double previous_results;
         wynik >> previous_results; //reading previous game results
