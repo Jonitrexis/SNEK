@@ -24,6 +24,12 @@ struct Apple { // creating an apple
 };
 Apple apple;
 
+struct obstacle{ //creating obstacle
+    int w;
+    int z;
+};
+obstacle wall;
+
 void GameOver() {
     system("cls"); // clearing the screen
     // and exiting the game after the player looses
@@ -150,6 +156,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
                     }
                 }
             }
+            
         }
         if (direction == 'u') {
             apple_found = false;
