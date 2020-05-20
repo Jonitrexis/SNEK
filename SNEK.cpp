@@ -156,7 +156,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
                     }
                 }
             }
-            
+
         }
         if (direction == 'u') {
             apple_found = false;
@@ -343,6 +343,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
 int main() {
     PlaySound(TEXT("theme-music.wav"), NULL, SND_ASYNC | SND_LOOP);
     // function to play music in background
+    DWORD t1, t2;
     hidecursor();       // running function to hide cursor
     SetConsoleTitle("SNAKE"); // changing console title
     std::fstream wynik; // creating .txt file with gamescore
@@ -380,6 +381,7 @@ int main() {
     print_game_map(map_size, game_map);
     direction = 'u';
     bool if_apple_eaten = true;
+    t1=GetTickCount(); // taking start of the game time
     while (fail == 0) {
         hidecursor();
         char _key_press = 0;
@@ -420,24 +422,42 @@ int main() {
         }
         stop = false;
     }
+
     if (fail == 1) { // what happens after loosing game
+        DWORD seconds = 0;
+        DWORD minutes = 0;
+        t2=(GetTickCount()-t1)/1000; // taking the end of the game time
+        minutes = (t2/60)%60;
+        seconds = t2%60;
         GameOver();
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x000f);
         wynik.open("wyniki.txt", std::ios::in | std::ios::out);
         // opening .txt file with game results
         double previous_results;
         wynik >> previous_results; // reading previous game results
+        //std::cout << t1 << std::endl << t2 << std::endl << minutes << std::endl << seconds << std::endl;
         if (points > previous_results) {
             // if current points are higher then previous results
             wynik << points; // replacing previous results with new ones
-            std::cout << " CONGRATULATIONS!!! NEW RECORD!!! - " << points << " PKT";
+            std::cout << " CONGRATULATIONS!!! NEW RECORD!!! - " << points << " PKT" << std::endl;
+            if (minutes!=0) {
+                std::cout << "Time: " << minutes << " min and " << seconds << " sec";
+            } else {
+                std::cout << "Time: " << seconds << " sec";
+            }
         } else {
             wynik << previous_results; // IF RECORD WAS NOT BEATEN
-            std::cout << "You've lost, Your points: " << points << " PKT" << std::endl << "Current record: " <<
-            previous_results << " PKT";
+            std::cout << "You've lost, your points: " << points << " PKT" << std::endl << "Current record: " <<
+            previous_results << " PKT" << std::endl;
+            if (minutes!=0) {
+                std::cout << "Time: " << minutes << " min and " << seconds << " sec";
+            } else {
+                std::cout << "Time: " << seconds << " sec";
+            }
         }
         wynik.close(); // closing file
         stop = true;
         return 0;
     }
 }
+
