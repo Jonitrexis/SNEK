@@ -440,6 +440,7 @@ int main() {
             // if current points are higher then previous results
             wynik << points; // replacing previous results with new ones
             std::cout << " CONGRATULATIONS!!! NEW RECORD!!! - " << points << " PKT" << std::endl;
+            std::cout << "Snake length: " << (points/10)-1 << std::endl;
             if (minutes!=0) {
                 std::cout << "Time: " << minutes << " min and " << seconds << " sec";
             } else {
@@ -449,6 +450,7 @@ int main() {
             wynik << previous_results; // IF RECORD WAS NOT BEATEN
             std::cout << "You've lost, your points: " << points << " PKT" << std::endl << "Current record: " <<
             previous_results << " PKT" << std::endl;
+            std::cout << "Snake length: " << (points/10)+1 << std::endl;
             if (minutes!=0) {
                 std::cout << "Time: " << minutes << " min and " << seconds << " sec";
             } else {
