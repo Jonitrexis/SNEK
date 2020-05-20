@@ -8,7 +8,7 @@ Projekt na zajęcia z Programowania
 4. [ ] Specjalne jabłka/jedzenie
 5. [ ] Różne pozimy trudności (szybciej się wąż porusza)
 6. [x] Samoporuszający się snek (j)
-7. [ ] Wszystkie warunki przegranej:
+7. [x] Wszystkie warunki przegranej:
 8. [x] Warunek pierwszy: Jechanie w ścianę - użytkownik może wybrać, czy chce przechodzić przez ściany, czy się na nich zabijać. (Kinga)
 9. [x] Warunek drugi: Zjedzenie samego siebie (Kinga)
 10. [ ] \(Optional) Warunek trzeci:  (nie wiem czy chcemy to dodawać ale jak na przykład jabłko jest niemożliwe do dojścia to gracz musi by się zabić czy ustalamy jakieś warunki, że do jabłka nie da się dojść i gra się kończy)*
