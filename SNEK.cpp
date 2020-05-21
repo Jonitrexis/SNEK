@@ -123,6 +123,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             snek.push_front(coordinates_front);
             _game_map[snek[0].first][snek[0].second] = 'O';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); // setting snakes' head to new position
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0006); // setting head colour to olive
             std::cout << "O";
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
             // setting default terminal colours
@@ -185,6 +186,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             snek.push_front(coordinates_front);
             _game_map[snek[0].first][snek[0].second] = 'O';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); // setting snakes' head to new position
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0006); // setting head colour to olive
             std::cout << "O";
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007);
             // setting default terminal colours
@@ -245,6 +247,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             snek.push_front(coordinates_front);
             _game_map[snek[0].first][snek[0].second] = 'O';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); // setting snakes' head to new position
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0006); // setting head colour to olive
             std::cout << "O";
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007); // setting default terminal colours
             // set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);
@@ -303,6 +306,7 @@ void ruch(std::pair<int, int> coordinates_front, std::pair<int, int> coordinates
             snek.push_front(coordinates_front);
             _game_map[snek[0].first][snek[0].second] = 'O';
             set_cursor_position(snek[0].first + 2, 2 * snek[0].second); // setting snakes' head to new position
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0006); // setting head colour to olive
             std::cout << "O";
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x0007); // setting default terminal colours
             // set_console_colour(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | COMMON_LVB_REVERSE_VIDEO);
